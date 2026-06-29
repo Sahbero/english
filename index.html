@@ -1,0 +1,756 @@
+```html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelime Macerası - Oxford 3000</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Flashcard 3D Animasyonları */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+        .card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+        }
+        .flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* Özel Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        .toast-enter {
+            animation: slideInUp 0.3s ease-out forwards;
+        }
+        @keyframes slideInUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .nav-item.active {
+            color: #0ea5e9;
+            border-top: 3px solid #0ea5e9;
+        }
+        .nav-item {
+            border-top: 3px solid transparent;
+        }
+    </style>
+</head>
+<body class="text-slate-800 h-screen flex flex-col overflow-hidden">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm z-10 px-4 py-4 flex justify-between items-center shrink-0">
+        <div class="flex items-center gap-2 text-brand-600">
+            <i class="fa-solid fa-graduation-cap text-2xl"></i>
+            <h1 class="text-xl font-bold">Kelime Macerası</h1>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="bg-amber-100 text-amber-600 px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
+                <i class="fa-solid fa-star"></i> <span id="score-display">0</span> XP
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto relative bg-slate-50 w-full max-w-md mx-auto shadow-lg">
+        
+        <!-- VIEW: HOME (Seviye Seçimi) -->
+        <div id="view-home" class="p-6 h-full flex flex-col justify-center animate-fade-in">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Hoş Geldin!</h2>
+                <p class="text-slate-500 text-sm">Hangi seviyede çalışmak istersin?</p>
+            </div>
+
+            <div class="space-y-4">
+                <button onclick="selectLevel('A1')" class="w-full bg-white border-2 border-emerald-400 p-4 rounded-2xl flex items-center justify-between hover:bg-emerald-50 transition shadow-sm group">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-xl font-bold group-hover:scale-110 transition">A1</div>
+                        <div class="text-left">
+                            <h3 class="font-bold text-slate-700">Başlangıç</h3>
+                            <p class="text-xs text-slate-400" id="count-a1">0 Kelime</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-300"></i>
+                </button>
+
+                <button onclick="selectLevel('A2')" class="w-full bg-white border-2 border-blue-400 p-4 rounded-2xl flex items-center justify-between hover:bg-blue-50 transition shadow-sm group">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl font-bold group-hover:scale-110 transition">A2</div>
+                        <div class="text-left">
+                            <h3 class="font-bold text-slate-700">Temel</h3>
+                            <p class="text-xs text-slate-400" id="count-a2">0 Kelime</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-300"></i>
+                </button>
+
+                <button onclick="selectLevel('B1')" class="w-full bg-white border-2 border-purple-400 p-4 rounded-2xl flex items-center justify-between hover:bg-purple-50 transition shadow-sm group">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xl font-bold group-hover:scale-110 transition">B1</div>
+                        <div class="text-left">
+                            <h3 class="font-bold text-slate-700">Orta</h3>
+                            <p class="text-xs text-slate-400" id="count-b1">0 Kelime</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-300"></i>
+                </button>
+            </div>
+            
+            <button onclick="resetProgress()" class="mt-8 text-xs text-red-400 underline text-center w-full">İlerlemeyi Sıfırla</button>
+        </div>
+
+        <!-- VIEW: LEARN (Flashcards) -->
+        <div id="view-learn" class="hidden p-4 h-full flex flex-col">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-sm font-semibold text-slate-500" id="learn-level-badge">A1 Seviyesi</span>
+                <span class="text-sm font-semibold text-brand-500" id="learn-progress">1 / 20</span>
+            </div>
+
+            <!-- Flashcard -->
+            <div class="flex-1 perspective-1000 w-full mb-6 relative cursor-pointer" onclick="flipCard()">
+                <div id="flashcard-inner" class="card-inner w-full h-full relative transform-style-3d shadow-xl rounded-3xl">
+                    <!-- Ön Yüz (İngilizce) -->
+                    <div class="absolute inset-0 backface-hidden bg-white rounded-3xl border-2 border-slate-100 flex flex-col items-center justify-center p-6 text-center">
+                        <p class="text-sm text-slate-400 mb-2 uppercase tracking-widest">İngilizce</p>
+                        <h2 id="fc-word" class="text-4xl font-bold text-brand-900 mb-4">word</h2>
+                        <button onclick="playAudio(event, document.getElementById('fc-word').innerText)" class="w-12 h-12 bg-brand-50 text-brand-600 rounded-full flex items-center justify-center hover:bg-brand-100 transition shadow-sm">
+                            <i class="fa-solid fa-volume-high"></i>
+                        </button>
+                        <p class="absolute bottom-6 text-xs text-slate-300"><i class="fa-solid fa-hand-pointer"></i> Çevirmek için dokun</p>
+                    </div>
+                    
+                    <!-- Arka Yüz (Türkçe & Örnek) -->
+                    <div class="absolute inset-0 backface-hidden bg-brand-600 rounded-3xl border-2 border-brand-600 flex flex-col items-center justify-center p-6 text-center rotate-y-180 text-white">
+                        <p class="text-sm text-brand-200 mb-2 uppercase tracking-widest">Türkçe</p>
+                        <h2 id="fc-meaning" class="text-3xl font-bold mb-6">anlamı</h2>
+                        
+                        <div class="bg-brand-700/50 p-4 rounded-xl w-full">
+                            <p class="text-xs text-brand-200 mb-1">Örnek Cümle:</p>
+                            <p id="fc-example" class="text-sm italic">Example sentence here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kontroller -->
+            <div class="flex justify-between items-center pb-2 shrink-0">
+                <button onclick="prevCard()" class="w-14 h-14 bg-white rounded-full shadow-md flex items-center justify-center text-slate-600 hover:text-brand-500 hover:bg-slate-50 transition disabled:opacity-50" id="btn-prev-card">
+                    <i class="fa-solid fa-arrow-left text-xl"></i>
+                </button>
+                <button onclick="markAsLearned()" class="flex-1 mx-4 bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-full font-bold shadow-md shadow-emerald-200 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-check"></i> Öğrendim
+                </button>
+                <button onclick="nextCard()" class="w-14 h-14 bg-white rounded-full shadow-md flex items-center justify-center text-slate-600 hover:text-brand-500 hover:bg-slate-50 transition" id="btn-next-card">
+                    <i class="fa-solid fa-arrow-right text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- VIEW: QUIZ -->
+        <div id="view-quiz" class="hidden p-6 h-full flex flex-col">
+            <div class="text-center mb-6">
+                <p class="text-slate-500 text-sm mb-1">Kelime Testi</p>
+                <h2 id="quiz-word" class="text-4xl font-bold text-slate-800">Word</h2>
+                <button onclick="playAudio(event, document.getElementById('quiz-word').innerText)" class="mt-3 text-brand-500 p-2">
+                    <i class="fa-solid fa-volume-high"></i> Dinle
+                </button>
+            </div>
+
+            <div id="quiz-options" class="flex-1 space-y-3">
+                <!-- Seçenekler JS ile doldurulacak -->
+            </div>
+            
+            <div class="mt-4 text-center">
+                <p class="text-sm text-slate-400">Doğru cevap +10 XP kazandırır.</p>
+            </div>
+        </div>
+
+        <!-- VIEW: MATCHING GAME -->
+        <div id="view-match" class="hidden p-4 h-full flex flex-col">
+            <div class="text-center mb-4">
+                <p class="text-slate-500 text-sm">Kelimeleri Anlamlarıyla Eşleştir</p>
+                <div class="h-2 bg-slate-200 rounded-full mt-2 w-1/2 mx-auto overflow-hidden">
+                    <div id="match-progress-bar" class="h-full bg-brand-500 w-0 transition-all duration-300"></div>
+                </div>
+            </div>
+
+            <div class="flex-1 flex gap-4">
+                <!-- İngilizce Kelimeler Sütunu -->
+                <div class="flex-1 flex flex-col gap-2" id="match-col-en">
+                    <!-- JS -->
+                </div>
+                <!-- Türkçe Anlamlar Sütunu -->
+                <div class="flex-1 flex flex-col gap-2" id="match-col-tr">
+                    <!-- JS -->
+                </div>
+            </div>
+            
+            <button onclick="initMatchGame()" class="mt-4 w-full bg-brand-100 text-brand-700 py-3 rounded-xl font-semibold hover:bg-brand-200 transition">
+                <i class="fa-solid fa-rotate-right"></i> Yenile
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bg-white border-t border-slate-200 flex justify-around items-center shrink-0 h-16 z-10 w-full max-w-md mx-auto">
+        <button onclick="switchTab('home')" id="tab-home" class="nav-item active flex-1 h-full flex flex-col items-center justify-center text-slate-400 transition">
+            <i class="fa-solid fa-house mb-1"></i>
+            <span class="text-[10px] font-medium">Seviyeler</span>
+        </button>
+        <button onclick="switchTab('learn')" id="tab-learn" class="nav-item flex-1 h-full flex flex-col items-center justify-center text-slate-400 transition hidden-if-no-level">
+            <i class="fa-solid fa-layer-group mb-1"></i>
+            <span class="text-[10px] font-medium">Öğren</span>
+        </button>
+        <button onclick="switchTab('quiz')" id="tab-quiz" class="nav-item flex-1 h-full flex flex-col items-center justify-center text-slate-400 transition hidden-if-no-level">
+            <i class="fa-solid fa-clipboard-question mb-1"></i>
+            <span class="text-[10px] font-medium">Test</span>
+        </button>
+        <button onclick="switchTab('match')" id="tab-match" class="nav-item flex-1 h-full flex flex-col items-center justify-center text-slate-400 transition hidden-if-no-level">
+            <i class="fa-solid fa-puzzle-piece mb-1"></i>
+            <span class="text-[10px] font-medium">Oyun</span>
+        </button>
+    </nav>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2"></div>
+
+    <script>
+        /**
+         * VERİ SETİ (A1, A2, B1 Örnekleri)
+         * NOT: 3.000 kelimenin tamamını buraya yapıştırabilirsin. 
+         * Sistem binlerce kelimeyle çalışacak şekilde tasarlanmıştır.
+         */
+        const kelimeler = [
+            // A1 SEVİYESİ
+            { id: 1, level: 'A1', en: 'about', tr: 'hakkında', example: 'What are you talking about?' },
+            { id: 2, level: 'A1', en: 'above', tr: 'yukarısında, üzerinde', example: 'The picture is above the sofa.' },
+            { id: 3, level: 'A1', en: 'across', tr: 'karşısına, bir uçtan diğer uca', example: 'She walked across the street.' },
+            { id: 4, level: 'A1', en: 'act', tr: 'hareket etmek, davranmak', example: 'He acting like a child.' },
+            { id: 5, level: 'A1', en: 'active', tr: 'aktif, etkin', example: 'She is very active in local politics.' },
+            { id: 6, level: 'A1', en: 'activity', tr: 'aktivite, faaliyet', example: 'Physical activity is good for you.' },
+            { id: 7, level: 'A1', en: 'add', tr: 'eklemek', example: 'Add some salt to the soup.' },
+            { id: 8, level: 'A1', en: 'address', tr: 'adres', example: 'What is your home address?' },
+            { id: 9, level: 'A1', en: 'adult', tr: 'yetişkin', example: 'This movie is for adults only.' },
+            { id: 10, level: 'A1', en: 'advice', tr: 'tavsiye', example: 'Let me give you some advice.' },
+            { id: 11, level: 'A1', en: 'afraid', tr: 'korkmuş', example: 'I am afraid of dogs.' },
+            { id: 12, level: 'A1', en: 'after', tr: 'sonra', example: 'Let us meet after school.' },
+            { id: 13, level: 'A1', en: 'afternoon', tr: 'öğleden sonra', example: 'Good afternoon!' },
+            { id: 14, level: 'A1', en: 'again', tr: 'tekrar', example: 'Please say it again.' },
+            { id: 15, level: 'A1', en: 'age', tr: 'yaş', example: 'What is your age?' },
+            { id: 16, level: 'A1', en: 'ago', tr: 'önce', example: 'He left ten minutes ago.' },
+            { id: 17, level: 'A1', en: 'agree', tr: 'katılmak (fikre)', example: 'I agree with you completely.' },
+            { id: 18, level: 'A1', en: 'air', tr: 'hava', example: 'The fresh air feels good.' },
+            { id: 19, level: 'A1', en: 'airport', tr: 'havalimanı', example: 'We arrived at the airport early.' },
+            { id: 20, level: 'A1', en: 'always', tr: 'her zaman', example: 'I always wake up early.' },
+
+            // A2 SEVİYESİ
+            { id: 21, level: 'A2', en: 'ability', tr: 'yetenek, kabiliyet', example: 'She has a great ability to learn languages.' },
+            { id: 22, level: 'A2', en: 'able', tr: 'yapabilen, muktedir', example: 'Will you be able to come?' },
+            { id: 23, level: 'A2', en: 'accept', tr: 'kabul etmek', example: 'I accept your apology.' },
+            { id: 24, level: 'A2', en: 'accident', tr: 'kaza', example: 'He had a car accident yesterday.' },
+            { id: 25, level: 'A2', en: 'according to', tr: 'göre', example: 'According to the weather forecast, it will rain.' },
+            { id: 26, level: 'A2', en: 'account', tr: 'hesap', example: 'I opened a new bank account.' },
+            { id: 27, level: 'A2', en: 'accurate', tr: 'kesin, doğru', example: 'We need accurate information.' },
+            { id: 28, level: 'A2', en: 'achieve', tr: 'başarmak, elde etmek', example: 'You can achieve your goals if you work hard.' },
+            { id: 29, level: 'A2', en: 'actual', tr: 'gerçek, asıl', example: 'The actual cost was higher than expected.' },
+            { id: 30, level: 'A2', en: 'advantage', tr: 'avantaj', example: 'Speed is a big advantage in this game.' },
+            { id: 31, level: 'A2', en: 'adventure', tr: 'macera', example: 'They went on a jungle adventure.' },
+            { id: 32, level: 'A2', en: 'advertise', tr: 'reklam yapmak', example: 'They advertise their products online.' },
+            { id: 33, level: 'A2', en: 'advice', tr: 'tavsiye (isim)', example: 'I need some legal advice.' },
+            { id: 34, level: 'A2', en: 'afford', tr: 'gücü yetmek (maddi)', example: 'I cannot afford a new car right now.' },
+            { id: 35, level: 'A2', en: 'afterwards', tr: 'daha sonra', example: 'We had dinner and went to the cinema afterwards.' },
+            { id: 36, level: 'A2', en: 'against', tr: 'karşı', example: 'Are you for or against the proposal?' },
+            { id: 37, level: 'A2', en: 'airline', tr: 'havayolu', example: 'Which airline are you flying with?' },
+            { id: 38, level: 'A2', en: 'alive', tr: 'hayatta, canlı', example: 'Is the spider still alive?' },
+            { id: 39, level: 'A2', en: 'allow', tr: 'izin vermek', example: 'Smoking is not allowed here.' },
+            { id: 40, level: 'A2', en: 'almost', tr: 'neredeyse', example: 'Dinner is almost ready.' },
+
+            // B1 SEVİYESİ
+            { id: 41, level: 'B1', en: 'absolutely', tr: 'kesinlikle, tamamen', example: 'You are absolutely right.' },
+            { id: 42, level: 'B1', en: 'academic', tr: 'akademik', example: 'She has a brilliant academic record.' },
+            { id: 43, level: 'B1', en: 'access', tr: 'erişim, giriş', example: 'The building has wheelchair access.' },
+            { id: 44, level: 'B1', en: 'accommodation', tr: 'konaklama, kalacak yer', example: 'We booked our hotel accommodation online.' },
+            { id: 45, level: 'B1', en: 'accompany', tr: 'eşlik etmek', example: 'Children under 14 must be accompanied by an adult.' },
+            { id: 46, level: 'B1', en: 'account for', tr: 'açıklamak, sorumlu olmak', example: 'How do you account for this mistake?' },
+            { id: 47, level: 'B1', en: 'achieve', tr: 'ulaşmak, başarmak', example: 'She finally achieved her ambition to run a marathon.' },
+            { id: 48, level: 'B1', en: 'achievement', tr: 'başarı', example: 'Climbing Mount Everest is a remarkable achievement.' },
+            { id: 49, level: 'B1', en: 'acknowledge', tr: 'kabul etmek, onaylamak', example: 'He refused to acknowledge his mistake.' },
+            { id: 50, level: 'B1', en: 'acquire', tr: 'edinmek, kazanmak', example: 'The company has acquired a new software system.' },
+            { id: 51, level: 'B1', en: 'actual', tr: 'gerçek', example: 'The actual numbers were much lower.' },
+            { id: 52, level: 'B1', en: 'adapt', tr: 'uyum sağlamak', example: 'It took him a while to adapt to his new job.' },
+            { id: 53, level: 'B1', en: 'additional', tr: 'ek, ilave', example: 'We require some additional information.' },
+            { id: 54, level: 'B1', en: 'address', tr: 'ele almak (bir konuyu)', example: 'We must address the issue of climate change.' },
+            { id: 55, level: 'B1', en: 'administration', tr: 'yönetim, idare', example: 'She works in hospital administration.' },
+            { id: 56, level: 'B1', en: 'adopt', tr: 'evlat edinmek, benimsemek', example: 'They decided to adopt a child.' },
+            { id: 57, level: 'B1', en: 'advance', tr: 'ilerlemek, gelişmek', example: 'Technology has advanced rapidly.' },
+            { id: 58, level: 'B1', en: 'affair', tr: 'mesele, ilişki', example: 'The minister resigned over the affair.' },
+            { id: 59, level: 'B1', en: 'afterwards', tr: 'sonrasında', example: 'Let\'s go out now and eat afterwards.' },
+            { id: 60, level: 'B1', en: 'agency', tr: 'ajans, acente', example: 'She works for an advertising agency.' }
+        ];
+
+        // --- DEVLET (STATE) YÖNETİMİ ---
+        let state = {
+            currentTab: 'home',
+            selectedLevel: null,
+            filteredWords: [],
+            flashcardIndex: 0,
+            score: 0,
+            learnedWords: [] // Öğrenilen kelime ID'leri
+        };
+
+        // --- OYUN DEĞİŞKENLERİ ---
+        let matchSelectedEn = null;
+        let matchSelectedTr = null;
+        let matchPairs = [];
+        let matchCompleted = 0;
+
+        // --- BAŞLANGIÇ (INIT) ---
+        function init() {
+            // LocalStorage'dan verileri çek
+            const savedScore = localStorage.getItem('kelimeXP');
+            if (savedScore) state.score = parseInt(savedScore);
+            
+            const savedLearned = localStorage.getItem('kelimeLearned');
+            if (savedLearned) state.learnedWords = JSON.parse(savedLearned);
+
+            updateScoreDisplay();
+            updateLevelCounts();
+            
+            // Eğer daha önce seviye seçilmediyse sekmeleri gizle
+            document.querySelectorAll('.hidden-if-no-level').forEach(el => {
+                el.style.opacity = '0.5';
+                el.style.pointerEvents = 'none';
+            });
+        }
+
+        // --- GENEL YARDIMCI FONKSİYONLAR ---
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            const bgClass = type === 'success' ? 'bg-emerald-500' : (type === 'error' ? 'bg-red-500' : 'bg-blue-500');
+            toast.className = `${bgClass} text-white px-4 py-3 rounded-lg shadow-lg text-sm font-semibold flex items-center gap-2 toast-enter`;
+            
+            const icon = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-triangle-exclamation' : 'fa-info-circle');
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> ${message}`;
+            
+            const container = document.getElementById('toast-container');
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-20px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        function playAudio(e, text) {
+            if(e) e.stopPropagation(); // Kartın dönmesini engelle
+            
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9; // Biraz daha yavaş okusun anlaşılsın
+                speechSynthesis.speak(utterance);
+            } else {
+                showToast("Tarayıcınız sesli okumayı desteklemiyor.", "error");
+            }
+        }
+
+        function shuffleArray(array) {
+            let curId = array.length;
+            while (0 !== curId) {
+                let randId = Math.floor(Math.random() * curId);
+                curId -= 1;
+                let tmp = array[curId];
+                array[curId] = array[randId];
+                array[randId] = tmp;
+            }
+            return array;
+        }
+
+        function addXP(amount) {
+            state.score += amount;
+            localStorage.setItem('kelimeXP', state.score);
+            updateScoreDisplay();
+            
+            // Pop animasyonu
+            const scoreEl = document.getElementById('score-display');
+            scoreEl.parentElement.classList.add('scale-110', 'text-amber-500');
+            setTimeout(() => {
+                scoreEl.parentElement.classList.remove('scale-110', 'text-amber-500');
+            }, 300);
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('score-display').innerText = state.score;
+        }
+
+        function updateLevelCounts() {
+            const levels = ['A1', 'A2', 'B1'];
+            levels.forEach(lvl => {
+                const total = kelimeler.filter(k => k.level === lvl).length;
+                const learned = kelimeler.filter(k => k.level === lvl && state.learnedWords.includes(k.id)).length;
+                document.getElementById(`count-${lvl.toLowerCase()}`).innerText = `${learned} / ${total} Öğrenildi`;
+            });
+        }
+
+        function resetProgress() {
+            if(confirm("Tüm ilerlemen, XP'lerin ve öğrendiğin kelimeler silinecek. Emin misin?")) {
+                localStorage.removeItem('kelimeXP');
+                localStorage.removeItem('kelimeLearned');
+                state.score = 0;
+                state.learnedWords = [];
+                updateScoreDisplay();
+                updateLevelCounts();
+                showToast("İlerleme sıfırlandı", "info");
+            }
+        }
+
+        // --- NAVİGASYON ---
+        function switchTab(tabId) {
+            if(tabId !== 'home' && !state.selectedLevel) {
+                showToast("Önce bir seviye seçmelisin!", "error");
+                return;
+            }
+
+            // UI Tab Güncelleme
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+
+            // View Güncelleme
+            const views = ['home', 'learn', 'quiz', 'match'];
+            views.forEach(v => {
+                document.getElementById(`view-${v}`).classList.add('hidden');
+            });
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+
+            state.currentTab = tabId;
+
+            // Görünüme özel başlatıcılar
+            if (tabId === 'learn') renderFlashcard();
+            if (tabId === 'quiz') initQuiz();
+            if (tabId === 'match') initMatchGame();
+        }
+
+        function selectLevel(level) {
+            state.selectedLevel = level;
+            // O seviyedeki kelimeleri filtrele
+            state.filteredWords = kelimeler.filter(k => k.level === level);
+            // Öğrenilmemiş kelimeleri öne al, öğrenilenleri sona at
+            state.filteredWords.sort((a, b) => {
+                const aLearned = state.learnedWords.includes(a.id);
+                const bLearned = state.learnedWords.includes(b.id);
+                if (aLearned === bLearned) return 0;
+                return aLearned ? 1 : -1;
+            });
+            
+            state.flashcardIndex = 0;
+            
+            // Menüyü aktif et
+            document.querySelectorAll('.hidden-if-no-level').forEach(el => {
+                el.style.opacity = '1';
+                el.style.pointerEvents = 'auto';
+            });
+            
+            showToast(`${level} Seviyesi Seçildi`);
+            switchTab('learn');
+        }
+
+        // --- FLASHCARD (ÖĞREN) MANTIĞI ---
+        function renderFlashcard() {
+            if (state.filteredWords.length === 0) return;
+            
+            const card = document.getElementById('flashcard-inner');
+            card.parentElement.classList.remove('flipped'); // Kartı ön yüze çevir
+            
+            const wordObj = state.filteredWords[state.flashcardIndex];
+            
+            // İçeriği güncelle
+            document.getElementById('fc-word').innerText = wordObj.en;
+            document.getElementById('fc-meaning').innerText = wordObj.tr;
+            document.getElementById('fc-example').innerText = wordObj.example;
+            
+            // Başlık
+            document.getElementById('learn-level-badge').innerText = `${wordObj.level} Seviyesi`;
+            document.getElementById('learn-progress').innerText = `${state.flashcardIndex + 1} / ${state.filteredWords.length}`;
+
+            // Buton durumları
+            document.getElementById('btn-prev-card').disabled = state.flashcardIndex === 0;
+            document.getElementById('btn-next-card').disabled = state.flashcardIndex === state.filteredWords.length - 1;
+        }
+
+        function flipCard() {
+            document.getElementById('flashcard-inner').parentElement.classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            if (state.flashcardIndex < state.filteredWords.length - 1) {
+                state.flashcardIndex++;
+                renderFlashcard();
+            }
+        }
+
+        function prevCard() {
+            if (state.flashcardIndex > 0) {
+                state.flashcardIndex--;
+                renderFlashcard();
+            }
+        }
+
+        function markAsLearned() {
+            const wordObj = state.filteredWords[state.flashcardIndex];
+            if (!state.learnedWords.includes(wordObj.id)) {
+                state.learnedWords.push(wordObj.id);
+                localStorage.setItem('kelimeLearned', JSON.stringify(state.learnedWords));
+                addXP(5);
+                showToast(`"${wordObj.en}" öğrenildi! +5 XP`);
+                updateLevelCounts();
+            } else {
+                showToast("Bu kelimeyi zaten öğrenmiştin.");
+            }
+            
+            setTimeout(() => {
+                nextCard();
+            }, 300);
+        }
+
+        // --- QUIZ (TEST) MANTIĞI ---
+        function initQuiz() {
+            if (state.filteredWords.length < 4) {
+                document.getElementById('quiz-options').innerHTML = `<p class="text-center text-slate-500">Test için bu seviyede yeterli kelime yok. Lütfen başka seviye seçin.</p>`;
+                return;
+            }
+
+            // Rastgele bir hedef kelime seç
+            const targetWord = state.filteredWords[Math.floor(Math.random() * state.filteredWords.length)];
+            
+            // 3 rastgele yanlış cevap seç (aynı kelime olmasın)
+            let wrongOptions = kelimeler.filter(k => k.id !== targetWord.id);
+            wrongOptions = shuffleArray(wrongOptions).slice(0, 3);
+            
+            // Şıkları birleştir ve karıştır
+            let options = [targetWord, ...wrongOptions];
+            options = shuffleArray(options);
+
+            // Arayüzü güncelle
+            document.getElementById('quiz-word').innerText = targetWord.en;
+            
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+            
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full bg-white border-2 border-slate-200 p-4 rounded-xl text-left font-medium text-slate-700 hover:border-brand-400 hover:bg-brand-50 transition quiz-btn';
+                btn.innerText = opt.tr;
+                btn.onclick = () => checkQuizAnswer(btn, opt.id, targetWord.id);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkQuizAnswer(btnElement, selectedId, correctId) {
+            const buttons = document.querySelectorAll('.quiz-btn');
+            // Butonları kilitle
+            buttons.forEach(b => b.onclick = null);
+
+            if (selectedId === correctId) {
+                // Doğru
+                btnElement.classList.replace('border-slate-200', 'border-emerald-500');
+                btnElement.classList.replace('text-slate-700', 'text-emerald-700');
+                btnElement.classList.replace('hover:bg-brand-50', 'bg-emerald-50');
+                addXP(10);
+                showToast("Doğru! +10 XP");
+            } else {
+                // Yanlış
+                btnElement.classList.replace('border-slate-200', 'border-red-500');
+                btnElement.classList.replace('text-slate-700', 'text-red-700');
+                btnElement.classList.replace('hover:bg-brand-50', 'bg-red-50');
+                
+                // Doğruyu göster
+                buttons.forEach(b => {
+                    // Butonun textinden doğru objeyi bulmamız lazım, id yerine içeriğe göre veya bir data attr kullanabilirdik.
+                    // Kolaylık için basitçe yeşil yapalım:
+                    const targetWordObj = state.filteredWords.find(w => w.id === correctId);
+                    if(b.innerText === targetWordObj.tr) {
+                        b.classList.replace('border-slate-200', 'border-emerald-500');
+                        b.classList.add('bg-emerald-50');
+                    }
+                });
+                showToast("Yanlış cevap!", "error");
+            }
+
+            // 1.5 saniye sonra yeni soru
+            setTimeout(() => {
+                if(state.currentTab === 'quiz') initQuiz();
+            }, 1500);
+        }
+
+        // --- EŞLEŞTİRME (MATCH) MANTIĞI ---
+        function initMatchGame() {
+            if (state.filteredWords.length < 5) {
+                document.getElementById('match-col-en').innerHTML = `<p class="text-center text-slate-500 text-sm">Oyun için yeterli kelime yok.</p>`;
+                document.getElementById('match-col-tr').innerHTML = '';
+                return;
+            }
+
+            // 5 Rastgele kelime seç
+            let shuffledWords = shuffleArray([...state.filteredWords]).slice(0, 5);
+            matchPairs = shuffledWords.map(w => ({ id: w.id, en: w.en, tr: w.tr }));
+            matchCompleted = 0;
+            matchSelectedEn = null;
+            matchSelectedTr = null;
+            document.getElementById('match-progress-bar').style.width = '0%';
+
+            // İngilizce ve Türkçe dizilerini ayrı ayrı karıştır
+            let enCol = shuffleArray([...matchPairs]);
+            let trCol = shuffleArray([...matchPairs]);
+
+            const enContainer = document.getElementById('match-col-en');
+            const trContainer = document.getElementById('match-col-tr');
+            enContainer.innerHTML = '';
+            trContainer.innerHTML = '';
+
+            enCol.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'match-btn-en w-full bg-white border-2 border-slate-200 p-3 rounded-lg text-center font-medium text-slate-700 shadow-sm transition';
+                btn.innerText = item.en;
+                btn.dataset.id = item.id;
+                btn.onclick = () => selectMatch('en', btn, item.id);
+                enContainer.appendChild(btn);
+            });
+
+            trCol.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'match-btn-tr w-full bg-white border-2 border-slate-200 p-3 rounded-lg text-center font-medium text-slate-700 shadow-sm transition text-sm';
+                btn.innerText = item.tr;
+                btn.dataset.id = item.id;
+                btn.onclick = () => selectMatch('tr', btn, item.id);
+                trContainer.appendChild(btn);
+            });
+        }
+
+        function selectMatch(type, btnElement, id) {
+            // Eğer daha önceden eşleşmiş bir butonsa işlem yapma
+            if (btnElement.classList.contains('opacity-50')) return;
+
+            // Seçim Görselliği
+            if (type === 'en') {
+                document.querySelectorAll('.match-btn-en').forEach(b => {
+                    if(!b.classList.contains('opacity-50')) b.classList.replace('border-brand-500', 'border-slate-200');
+                });
+                btnElement.classList.replace('border-slate-200', 'border-brand-500');
+                matchSelectedEn = { el: btnElement, id: id };
+                playAudio(null, btnElement.innerText); // Tıklayınca okusun
+            } else {
+                document.querySelectorAll('.match-btn-tr').forEach(b => {
+                    if(!b.classList.contains('opacity-50')) b.classList.replace('border-brand-500', 'border-slate-200');
+                });
+                btnElement.classList.replace('border-slate-200', 'border-brand-500');
+                matchSelectedTr = { el: btnElement, id: id };
+            }
+
+            // İkisi de seçildiyse kontrol et
+            if (matchSelectedEn && matchSelectedTr) {
+                if (matchSelectedEn.id === matchSelectedTr.id) {
+                    // Eşleşme Başarılı
+                    matchSelectedEn.el.classList.replace('border-brand-500', 'border-emerald-500');
+                    matchSelectedEn.el.classList.add('bg-emerald-50', 'text-emerald-700', 'opacity-50');
+                    matchSelectedEn.el.onclick = null;
+                    
+                    matchSelectedTr.el.classList.replace('border-brand-500', 'border-emerald-500');
+                    matchSelectedTr.el.classList.add('bg-emerald-50', 'text-emerald-700', 'opacity-50');
+                    matchSelectedTr.el.onclick = null;
+
+                    addXP(5);
+                    matchCompleted++;
+                    
+                    // ProgressBar Güncelle
+                    document.getElementById('match-progress-bar').style.width = `${(matchCompleted / 5) * 100}%`;
+
+                    if (matchCompleted === 5) {
+                        setTimeout(() => {
+                            showToast("Bölüm Tamamlandı! +25 XP Bonus", "success");
+                            addXP(25);
+                            initMatchGame();
+                        }, 1000);
+                    }
+                } else {
+                    // Eşleşme Hatalı
+                    matchSelectedEn.el.classList.replace('border-brand-500', 'border-red-500');
+                    matchSelectedTr.el.classList.replace('border-brand-500', 'border-red-500');
+                    
+                    const enEl = matchSelectedEn.el;
+                    const trEl = matchSelectedTr.el;
+                    
+                    setTimeout(() => {
+                        enEl.classList.replace('border-red-500', 'border-slate-200');
+                        trEl.classList.replace('border-red-500', 'border-slate-200');
+                    }, 500);
+                }
+                
+                // Seçimleri sıfırla
+                matchSelectedEn = null;
+                matchSelectedTr = null;
+            }
+        }
+
+        // Uygulamayı Başlat
+        window.onload = init;
+
+    </script>
+</body>
+</html>
+
+```
