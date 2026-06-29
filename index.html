@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LEARNER - Kelime Öğren</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Daha eğlenceli ve modern bir font: Quicksand -->
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
@@ -21,38 +20,32 @@
                         primary: {
                             50: '#eef2ff',
                             100: '#e0e7ff',
+                            400: '#818cf8',
                             500: '#6366f1',
                             600: '#4f46e5',
                             900: '#312e81',
                         },
-                        accent: '#f97316' // Turuncu vurgu
+                        accent: '#f97316'
                     }
                 }
             }
         }
     </script>
     <style>
-        /* Dinamik yükseklik: Tarayıcı çubuğu kaydığında alt kısmı kesmez */
         body {
             font-family: 'Quicksand', sans-serif;
             background-color: #f1f5f9;
             -webkit-tap-highlight-color: transparent;
-            height: 100vh; /* Fallback */
-            height: 100dvh;
+            height: 100vh; height: 100dvh;
             margin: 0;
-            display: flex;
-            justify-content: center;
+            display: flex; justify-content: center;
         }
 
-        /* PC'de mobil uygulama görünümü için sınırlandırılmış ana kapsayıcı */
         .app-container {
-            width: 100%;
-            max-width: 480px;
-            height: 100%;
+            width: 100%; max-width: 480px; height: 100%;
             background-color: #fafafa;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column;
+            box-shadow: 0 0 30px rgba(0,0,0,0.05);
             position: relative;
         }
 
@@ -61,14 +54,9 @@
         .transform-style-3d { transform-style: preserve-3d; }
         .backface-hidden { backface-visibility: hidden; }
         .rotate-y-180 { transform: rotateY(180deg); }
-        .card-inner { transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); } /* Daha oyuncu bir sekme efekti */
+        .card-inner { transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .flipped .card-inner { transform: rotateY(180deg); }
 
-        /* Review Card Animasyonları */
-        .review-card-inner { transition: max-height 0.3s ease, padding 0.3s ease; max-height: 0; overflow: hidden; }
-        .review-card.expanded .review-card-inner { max-height: 200px; padding-top: 1rem; }
-        
-        /* Özel Scrollbar */
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -79,34 +67,36 @@
             to { transform: translate(-50%, 0); opacity: 1; }
         }
         
-        /* Buton tıklama efekti */
-        .bouncy-btn:active { transform: scale(0.95); }
+        .bouncy-btn { transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s; }
+        .bouncy-btn:active { transform: scale(0.92); }
 
         .nav-item { transition: all 0.2s ease; position: relative; }
         .nav-item.active { color: #4f46e5; }
-        .nav-item.active i { transform: translateY(-3px) scale(1.1); color: #4f46e5; }
+        .nav-item.active i { transform: translateY(-4px) scale(1.15); color: #4f46e5; }
         .nav-item::after {
             content: ''; position: absolute; top: -2px; left: 50%; transform: translateX(-50%) scaleX(0);
-            width: 30px; height: 3px; background-color: #4f46e5; border-radius: 0 0 5px 5px; transition: transform 0.3s ease;
+            width: 25px; height: 4px; background-color: #4f46e5; border-radius: 0 0 6px 6px; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .nav-item.active::after { transform: translateX(-50%) scaleX(1); }
+        
+        .animate-fade-in { animation: fadeIn 0.4s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <div class="app-container">
         <!-- Header -->
-        <header class="bg-white shadow-sm z-20 px-5 py-4 flex justify-between items-center shrink-0 rounded-b-2xl">
-            <!-- LOGO: Anasayfaya döndürür -->
-            <button onclick="goHome()" class="flex items-center gap-2 text-primary-600 hover:opacity-80 transition bouncy-btn">
-                <div class="bg-primary-100 p-2 rounded-xl">
+        <header class="bg-white shadow-sm z-20 px-5 py-4 flex justify-between items-center shrink-0 rounded-b-3xl">
+            <button onclick="goHome()" class="flex items-center gap-2 text-primary-600 hover:opacity-80 bouncy-btn">
+                <div class="bg-primary-100 p-2.5 rounded-2xl">
                     <i class="fa-solid fa-rocket text-xl"></i>
                 </div>
-                <h1 class="text-2xl font-bold tracking-tight">LEARNER</h1>
+                <h1 class="text-2xl font-extrabold tracking-tight">LEARNER</h1>
             </button>
             <div class="flex items-center">
-                <div class="bg-orange-100 text-orange-600 px-4 py-1.5 rounded-full text-sm font-bold flex items-center gap-2 shadow-sm border border-orange-200">
-                    <i class="fa-solid fa-bolt text-orange-500"></i> <span id="score-display">0</span>
+                <div class="bg-orange-50 text-orange-600 px-4 py-2 rounded-2xl text-sm font-bold flex items-center gap-2 border border-orange-100 shadow-sm transition-colors duration-300">
+                    <i class="fa-solid fa-bolt text-orange-500"></i> <span id="score-display">0 XP</span>
                 </div>
             </div>
         </header>
@@ -116,50 +106,59 @@
             
             <!-- VIEW: HOME (Seviye Seçimi) -->
             <div id="view-home" class="h-full flex flex-col justify-center animate-fade-in max-w-sm mx-auto">
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-slate-800 mb-2">Maceraya Başla!</h2>
-                    <p class="text-slate-500 font-medium">Öğrenmek istediğin seviyeyi seç</p>
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-extrabold text-slate-800 mb-2">Maceraya Başla!</h2>
+                    <p class="text-slate-500 font-medium">Bugün hangi seviyeyi keşfedeceksin?</p>
                 </div>
 
-                <div class="space-y-5">
-                    <button onclick="selectLevel('A1')" class="bouncy-btn w-full bg-white border-2 border-emerald-100 p-4 rounded-3xl flex items-center justify-between hover:border-emerald-400 hover:shadow-lg hover:shadow-emerald-100 transition-all group relative overflow-hidden">
+                <div class="space-y-4">
+                    <!-- A1 Button -->
+                    <button onclick="selectLevel('A1')" class="bouncy-btn w-full bg-white border-2 border-emerald-100 p-4 rounded-3xl flex items-center justify-between hover:border-emerald-400 hover:shadow-xl hover:shadow-emerald-100/50 transition-all group relative overflow-hidden">
                         <div class="absolute right-0 top-0 w-32 h-32 bg-emerald-50 rounded-full blur-3xl -z-10 group-hover:bg-emerald-100 transition"></div>
                         <div class="flex items-center gap-5">
-                            <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition shadow-sm">A1</div>
+                            <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl font-extrabold group-hover:scale-110 transition shadow-sm">A1</div>
                             <div class="text-left">
                                 <h3 class="text-lg font-bold text-slate-700">Başlangıç</h3>
                                 <p class="text-sm font-semibold text-emerald-500" id="count-a1">0 Kelime</p>
                             </div>
                         </div>
-                        <i class="fa-solid fa-circle-play text-3xl text-emerald-200 group-hover:text-emerald-500 transition"></i>
+                        <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white text-emerald-300 transition-colors">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
                     </button>
 
-                    <button onclick="selectLevel('A2')" class="bouncy-btn w-full bg-white border-2 border-blue-100 p-4 rounded-3xl flex items-center justify-between hover:border-blue-400 hover:shadow-lg hover:shadow-blue-100 transition-all group relative overflow-hidden">
+                    <!-- A2 Button -->
+                    <button onclick="selectLevel('A2')" class="bouncy-btn w-full bg-white border-2 border-blue-100 p-4 rounded-3xl flex items-center justify-between hover:border-blue-400 hover:shadow-xl hover:shadow-blue-100/50 transition-all group relative overflow-hidden">
                         <div class="absolute right-0 top-0 w-32 h-32 bg-blue-50 rounded-full blur-3xl -z-10 group-hover:bg-blue-100 transition"></div>
                         <div class="flex items-center gap-5">
-                            <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition shadow-sm">A2</div>
+                            <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-2xl font-extrabold group-hover:scale-110 transition shadow-sm">A2</div>
                             <div class="text-left">
                                 <h3 class="text-lg font-bold text-slate-700">Temel</h3>
                                 <p class="text-sm font-semibold text-blue-500" id="count-a2">0 Kelime</p>
                             </div>
                         </div>
-                        <i class="fa-solid fa-circle-play text-3xl text-blue-200 group-hover:text-blue-500 transition"></i>
+                        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white text-blue-300 transition-colors">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
                     </button>
 
-                    <button onclick="selectLevel('B1')" class="bouncy-btn w-full bg-white border-2 border-purple-100 p-4 rounded-3xl flex items-center justify-between hover:border-purple-400 hover:shadow-lg hover:shadow-purple-100 transition-all group relative overflow-hidden">
+                    <!-- B1 Button -->
+                    <button onclick="selectLevel('B1')" class="bouncy-btn w-full bg-white border-2 border-purple-100 p-4 rounded-3xl flex items-center justify-between hover:border-purple-400 hover:shadow-xl hover:shadow-purple-100/50 transition-all group relative overflow-hidden">
                         <div class="absolute right-0 top-0 w-32 h-32 bg-purple-50 rounded-full blur-3xl -z-10 group-hover:bg-purple-100 transition"></div>
                         <div class="flex items-center gap-5">
-                            <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition shadow-sm">B1</div>
+                            <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-2xl font-extrabold group-hover:scale-110 transition shadow-sm">B1</div>
                             <div class="text-left">
                                 <h3 class="text-lg font-bold text-slate-700">Orta</h3>
                                 <p class="text-sm font-semibold text-purple-500" id="count-b1">0 Kelime</p>
                             </div>
                         </div>
-                        <i class="fa-solid fa-circle-play text-3xl text-purple-200 group-hover:text-purple-500 transition"></i>
+                        <div class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center group-hover:bg-purple-500 group-hover:text-white text-purple-300 transition-colors">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
                     </button>
                 </div>
                 
-                <button onclick="resetProgress()" class="mt-10 text-sm font-semibold text-red-400 hover:text-red-500 text-center w-full flex items-center justify-center gap-2 bouncy-btn">
+                <button onclick="resetProgress()" class="mt-8 text-sm font-semibold text-slate-400 hover:text-red-500 text-center w-full flex items-center justify-center gap-2 bouncy-btn transition-colors">
                     <i class="fa-solid fa-trash-can"></i> İlerlemeyi Sıfırla
                 </button>
             </div>
@@ -167,30 +166,32 @@
             <!-- VIEW: LEARN (Flashcards) -->
             <div id="view-learn" class="hidden h-full flex flex-col max-w-sm mx-auto">
                 <div class="flex justify-between items-center mb-6">
-                    <div class="bg-white px-3 py-1 rounded-lg shadow-sm border border-slate-100 font-bold text-slate-600" id="learn-level-badge">A1</div>
-                    <div class="bg-primary-50 text-primary-600 px-3 py-1 rounded-lg font-bold" id="learn-progress">1 / 20</div>
+                    <div class="bg-white px-4 py-1.5 rounded-xl shadow-sm border border-slate-100 font-extrabold text-slate-600 flex items-center gap-2" id="learn-level-badge">
+                        A1
+                    </div>
+                    <div class="bg-primary-50 text-primary-600 px-4 py-1.5 rounded-xl font-bold" id="learn-progress">1 / 20</div>
                 </div>
 
                 <!-- Flashcard -->
                 <div class="flex-1 perspective-1000 w-full mb-8 relative cursor-pointer group" onclick="flipCard()">
-                    <div id="flashcard-inner" class="card-inner w-full h-full relative transform-style-3d shadow-2xl rounded-[2.5rem]">
+                    <div id="flashcard-inner" class="card-inner w-full h-full relative transform-style-3d shadow-2xl shadow-primary-900/10 rounded-[2.5rem]">
                         <!-- Ön Yüz (İngilizce) -->
                         <div class="absolute inset-0 backface-hidden bg-white rounded-[2.5rem] border-4 border-white flex flex-col items-center justify-center p-6 text-center">
-                            <div class="absolute top-6 right-6 text-slate-300"><i class="fa-solid fa-arrows-rotate text-xl"></i></div>
-                            <p class="text-sm font-bold text-slate-400 mb-3 tracking-widest uppercase">İngilizce</p>
-                            <h2 id="fc-word" class="text-5xl font-bold text-slate-800 mb-6">word</h2>
-                            <button onclick="playAudio(event, document.getElementById('fc-word').innerText)" class="w-16 h-16 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center hover:bg-primary-200 hover:scale-110 transition shadow-sm bouncy-btn">
+                            <div class="absolute top-6 right-6 text-slate-200 group-hover:text-primary-300 transition-colors"><i class="fa-solid fa-arrows-rotate text-2xl"></i></div>
+                            <p class="text-xs font-extrabold text-slate-300 mb-4 tracking-widest uppercase bg-slate-50 px-3 py-1 rounded-lg">İngilizce</p>
+                            <h2 id="fc-word" class="text-5xl font-extrabold text-slate-800 mb-8 break-words w-full px-2">word</h2>
+                            <button onclick="playAudio(event, document.getElementById('fc-word').innerText)" class="w-16 h-16 bg-primary-50 text-primary-600 rounded-full flex items-center justify-center hover:bg-primary-100 hover:scale-110 transition shadow-sm bouncy-btn">
                                 <i class="fa-solid fa-volume-high text-2xl"></i>
                             </button>
                         </div>
                         
                         <!-- Arka Yüz (Türkçe & Örnek) -->
                         <div class="absolute inset-0 backface-hidden bg-primary-600 rounded-[2.5rem] border-4 border-primary-500 flex flex-col items-center justify-center p-6 text-center rotate-y-180 text-white shadow-inner">
-                            <p class="text-sm font-bold text-primary-200 mb-2 tracking-widest uppercase">Türkçe Anlamı</p>
-                            <h2 id="fc-meaning" class="text-4xl font-bold mb-8">anlamı</h2>
+                            <p class="text-xs font-extrabold text-primary-200 mb-3 tracking-widest uppercase bg-primary-700/50 px-3 py-1 rounded-lg">Türkçe Anlamı</p>
+                            <h2 id="fc-meaning" class="text-4xl font-extrabold mb-8 break-words w-full px-2">anlamı</h2>
                             
-                            <div class="bg-primary-800/40 p-5 rounded-2xl w-full backdrop-blur-sm border border-primary-500/50">
-                                <p class="text-xs font-bold text-primary-300 mb-2 uppercase"><i class="fa-solid fa-quote-left mr-1"></i> Örnek Cümle</p>
+                            <div class="bg-primary-800/40 p-5 rounded-2xl w-full backdrop-blur-sm border border-primary-400/30">
+                                <p class="text-xs font-bold text-primary-300 mb-2 uppercase flex items-center justify-center gap-1"><i class="fa-solid fa-quote-left"></i> Örnek Cümle</p>
                                 <p id="fc-example" class="text-base font-medium">Example sentence here.</p>
                             </div>
                         </div>
@@ -198,14 +199,14 @@
                 </div>
 
                 <!-- Kontroller -->
-                <div class="flex justify-between items-center pb-2 shrink-0 gap-3">
-                    <button onclick="prevCard()" class="w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-200 flex items-center justify-center text-slate-400 hover:text-primary-600 hover:bg-primary-50 transition disabled:opacity-30 disabled:hover:bg-white bouncy-btn" id="btn-prev-card">
+                <div class="flex justify-between items-center pb-2 shrink-0 gap-4">
+                    <button onclick="prevCard()" class="w-16 h-16 bg-white rounded-[1.25rem] shadow-sm border border-slate-200 flex items-center justify-center text-slate-400 hover:text-primary-600 hover:bg-primary-50 hover:border-primary-200 transition disabled:opacity-30 disabled:hover:bg-white bouncy-btn" id="btn-prev-card">
                         <i class="fa-solid fa-chevron-left text-2xl"></i>
                     </button>
-                    <button onclick="markAsLearned()" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white h-16 rounded-2xl font-bold shadow-lg shadow-emerald-200 transition flex items-center justify-center gap-2 text-lg bouncy-btn">
+                    <button onclick="markAsLearned()" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white h-16 rounded-[1.25rem] font-bold shadow-lg shadow-emerald-200/50 transition flex items-center justify-center gap-2 text-lg bouncy-btn">
                         <i class="fa-solid fa-check-circle text-xl"></i> Öğrendim
                     </button>
-                    <button onclick="nextCard()" class="w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-200 flex items-center justify-center text-slate-400 hover:text-primary-600 hover:bg-primary-50 transition bouncy-btn" id="btn-next-card">
+                    <button onclick="nextCard()" class="w-16 h-16 bg-white rounded-[1.25rem] shadow-sm border border-slate-200 flex items-center justify-center text-slate-400 hover:text-primary-600 hover:bg-primary-50 hover:border-primary-200 transition bouncy-btn" id="btn-next-card">
                         <i class="fa-solid fa-chevron-right text-2xl"></i>
                     </button>
                 </div>
@@ -213,101 +214,156 @@
 
             <!-- VIEW: QUIZ -->
             <div id="view-quiz" class="hidden h-full flex flex-col max-w-sm mx-auto">
-                <div class="text-center mb-8 bg-white p-6 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden">
-                    <div class="absolute -top-4 -right-4 text-8xl text-slate-50 opacity-50"><i class="fa-solid fa-circle-question"></i></div>
-                    <p class="text-primary-500 font-bold text-sm mb-2 uppercase tracking-wide relative z-10">Bu kelimenin anlamı nedir?</p>
-                    <h2 id="quiz-word" class="text-4xl font-bold text-slate-800 relative z-10 mb-4">Word</h2>
-                    <button onclick="playAudio(event, document.getElementById('quiz-word').innerText)" class="relative z-10 bg-primary-50 text-primary-600 px-4 py-2 rounded-full text-sm font-bold hover:bg-primary-100 transition bouncy-btn">
-                        <i class="fa-solid fa-volume-high mr-1"></i> Dinle
+                <div class="text-center mb-6 bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 relative overflow-hidden">
+                    <div class="absolute -top-6 -right-6 text-9xl text-slate-50 opacity-60"><i class="fa-solid fa-circle-question"></i></div>
+                    <p class="text-primary-500 font-extrabold text-xs mb-3 uppercase tracking-wider relative z-10 bg-primary-50 inline-block px-3 py-1 rounded-lg">Anlamını Seç</p>
+                    <h2 id="quiz-word" class="text-4xl font-extrabold text-slate-800 relative z-10 mb-5 break-words">Word</h2>
+                    <button onclick="playAudio(event, document.getElementById('quiz-word').innerText)" class="relative z-10 bg-slate-100 text-slate-600 px-5 py-2.5 rounded-full text-sm font-bold hover:bg-slate-200 transition bouncy-btn flex items-center gap-2 mx-auto">
+                        <i class="fa-solid fa-volume-high"></i> Seslendir
                     </button>
                 </div>
 
                 <div id="quiz-options" class="flex-1 space-y-3">
-                    <!-- Seçenekler JS ile doldurulacak -->
+                    <!-- Seçenekler JS -->
                 </div>
             </div>
 
             <!-- VIEW: MATCHING GAME -->
             <div id="view-match" class="hidden h-full flex flex-col max-w-sm mx-auto">
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-6 text-center">
-                    <p class="text-slate-700 font-bold mb-3"><i class="fa-solid fa-puzzle-piece text-primary-500 mr-1"></i> Eşleştirme Oyunu</p>
-                    <div class="h-3 bg-slate-100 rounded-full w-full overflow-hidden">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-5 text-center flex flex-col items-center">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="fa-solid fa-puzzle-piece text-primary-500 text-xl"></i>
+                        <p class="text-slate-700 font-extrabold text-lg">Eşleştirme</p>
+                    </div>
+                    <div class="h-2.5 bg-slate-100 rounded-full w-full overflow-hidden">
                         <div id="match-progress-bar" class="h-full bg-gradient-to-r from-primary-400 to-primary-600 w-0 transition-all duration-500 rounded-full"></div>
                     </div>
                 </div>
 
                 <div class="flex-1 flex gap-3 h-full overflow-hidden">
-                    <!-- İngilizce Sütunu -->
                     <div class="flex-1 flex flex-col justify-between gap-2 h-full" id="match-col-en"></div>
-                    <!-- Türkçe Sütunu -->
                     <div class="flex-1 flex flex-col justify-between gap-2 h-full" id="match-col-tr"></div>
                 </div>
                 
-                <button onclick="initMatchGame()" class="mt-4 w-full bg-slate-800 text-white py-4 rounded-2xl font-bold hover:bg-slate-700 transition shadow-lg flex items-center justify-center gap-2 bouncy-btn shrink-0">
-                    <i class="fa-solid fa-rotate-right"></i> Yeniden Dağıt
+                <button onclick="initMatchGame(true)" class="mt-4 w-full bg-slate-800 text-white py-4 rounded-2xl font-bold hover:bg-slate-700 transition shadow-lg flex items-center justify-center gap-2 bouncy-btn shrink-0">
+                    <i class="fa-solid fa-rotate-right"></i> Kartları Değiştir
                 </button>
             </div>
 
-            <!-- VIEW: REVIEW (TEKRAR ET) -->
-            <div id="view-review" class="hidden h-full flex flex-col max-w-sm mx-auto">
-                <div class="text-center mb-6">
-                    <h2 class="text-2xl font-bold text-slate-800">Öğrendiklerim</h2>
-                    <p class="text-slate-500 font-medium text-sm mt-1">Hafızanı tazelemek için kelimelere tıkla.</p>
+            <!-- VIEW: REVIEW (HAFIZA TESTİ) -->
+            <div id="view-review" class="hidden h-full flex flex-col max-w-sm mx-auto animate-fade-in">
+                <!-- Boş Durum -->
+                <div id="review-empty" class="hidden h-full flex flex-col items-center justify-center text-center p-6">
+                    <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-brain text-4xl text-slate-300"></i>
+                    </div>
+                    <h3 class="font-extrabold text-slate-700 text-xl mb-3">Hafıza Testi Boş</h3>
+                    <p class="text-slate-500 font-medium leading-relaxed">Önce 'Öğren' sekmesinden kelimeleri öğrenmelisin. Öğrendiğin kelimeleri burada test edeceğiz!</p>
+                    <button onclick="switchTab('learn')" class="mt-8 bg-primary-600 text-white px-8 py-3 rounded-2xl font-bold bouncy-btn shadow-lg shadow-primary-200">
+                        Öğrenmeye Başla
+                    </button>
                 </div>
                 
-                <div class="flex justify-between items-center mb-4 bg-white p-2 rounded-xl shadow-sm border border-slate-100">
-                    <span class="text-sm font-bold text-slate-600 px-2" id="review-count">Toplam: 0 Kelime</span>
-                    <button onclick="playReviewWords()" class="bg-primary-100 text-primary-700 px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-primary-200 transition flex items-center gap-1 bouncy-btn">
-                        <i class="fa-solid fa-play"></i> Hepsini Dinle
+                <!-- Tamamlandı Durumu -->
+                <div id="review-done" class="hidden h-full flex flex-col items-center justify-center text-center p-6">
+                    <div class="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-trophy text-4xl text-emerald-500"></i>
+                    </div>
+                    <h3 class="font-extrabold text-slate-700 text-xl mb-3">Harika İş Çıkardın!</h3>
+                    <p class="text-slate-500 font-medium">Öğrendiğin tüm kelimeleri başarıyla tekrar ettin.</p>
+                    <button onclick="startReview()" class="mt-8 bg-slate-800 text-white px-8 py-3 rounded-2xl font-bold bouncy-btn shadow-lg flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> Yeniden Başla
                     </button>
                 </div>
 
-                <div id="review-list" class="flex-1 overflow-y-auto space-y-3 pb-4 pr-1">
-                    <!-- JS ile dolacak -->
+                <!-- Aktif Test Durumu -->
+                <div id="review-active" class="hidden h-full flex flex-col">
+                    <div class="flex justify-between items-center mb-4 px-1">
+                        <div>
+                            <h2 class="text-xl font-extrabold text-slate-800">Hafıza Testi</h2>
+                            <p class="text-xs font-bold text-primary-500 mt-1 uppercase tracking-wider" id="review-progress-text">Kalan: 5 Kelime</p>
+                        </div>
+                        <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 shadow-sm border border-primary-200">
+                            <i class="fa-solid fa-dumbbell text-xl"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 bg-white rounded-[2.5rem] shadow-md border border-slate-100 p-6 flex flex-col relative overflow-hidden">
+                        <div class="flex-1 flex flex-col items-center justify-center text-center w-full z-10 transition-all" id="review-question-area">
+                            <p class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Bu kelimenin anlamı nedir?</p>
+                            <h2 id="review-word-en" class="text-5xl font-extrabold text-slate-800 mb-6 break-words w-full">Word</h2>
+                            <button onclick="playAudio(event, document.getElementById('review-word-en').innerText)" class="w-14 h-14 bg-slate-50 text-slate-500 rounded-full flex items-center justify-center hover:bg-slate-100 transition bouncy-btn mb-6 border border-slate-200">
+                                <i class="fa-solid fa-volume-high text-xl"></i>
+                            </button>
+                            
+                            <button id="btn-show-answer" onclick="showReviewAnswer()" class="w-full bg-primary-500 hover:bg-primary-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-primary-200 transition bouncy-btn mt-auto">
+                                Cevabı Göster
+                            </button>
+                        </div>
+
+                        <!-- Cevap Alanı (Başlangıçta Gizli) -->
+                        <div id="review-answer-area" class="hidden flex-col items-center justify-center text-center w-full h-full z-10 absolute inset-0 bg-white p-6 animate-fade-in">
+                            <p class="text-xs font-bold text-primary-400 uppercase tracking-widest mb-2">Doğru Cevap</p>
+                            <h3 id="review-word-tr" class="text-4xl font-extrabold text-primary-600 mb-4 break-words w-full">anlamı</h3>
+                            
+                            <div class="bg-slate-50 p-4 rounded-2xl w-full mb-auto mt-4 border border-slate-100">
+                                <p id="review-word-ex" class="text-sm text-slate-600 font-medium italic">Example sentence here.</p>
+                            </div>
+
+                            <p class="text-sm font-bold text-slate-500 mb-4 mt-6">Kendini nasıl değerlendiriyorsun?</p>
+                            <div class="flex gap-3 w-full">
+                                <button onclick="handleReviewResult(false)" class="flex-1 bg-white border-2 border-rose-200 hover:border-rose-500 hover:bg-rose-50 text-rose-600 py-4 rounded-2xl font-bold transition bouncy-btn flex flex-col items-center justify-center gap-1">
+                                    <i class="fa-solid fa-xmark text-2xl"></i>
+                                    <span class="text-sm">Unuttum</span>
+                                </button>
+                                <button onclick="handleReviewResult(true)" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-emerald-200/50 transition bouncy-btn flex flex-col items-center justify-center gap-1">
+                                    <i class="fa-solid fa-check text-2xl"></i>
+                                    <span class="text-sm">Hatırladım</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
         </main>
 
         <!-- Bottom Navigation -->
-        <nav class="bg-white border-t border-slate-100 flex justify-around items-center h-[72px] z-20 shrink-0 pb-safe rounded-t-2xl shadow-[0_-5px_15px_rgba(0,0,0,0.03)]">
+        <nav class="bg-white border-t border-slate-100 flex justify-around items-center h-[76px] z-20 shrink-0 pb-safe rounded-t-3xl shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
             <button onclick="switchTab('home')" id="tab-home" class="nav-item active flex-1 h-full flex flex-col items-center justify-center text-slate-400">
-                <i class="fa-solid fa-layer-group text-xl mb-1"></i>
-                <span class="text-[10px] font-bold uppercase tracking-wider">Seviyeler</span>
+                <i class="fa-solid fa-layer-group text-2xl mb-1"></i>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider">Seviye</span>
             </button>
             <button onclick="switchTab('learn')" id="tab-learn" class="nav-item flex-1 h-full flex flex-col items-center justify-center text-slate-400">
-                <i class="fa-solid fa-book-open text-xl mb-1"></i>
-                <span class="text-[10px] font-bold uppercase tracking-wider">Öğren</span>
+                <i class="fa-solid fa-book-open text-2xl mb-1"></i>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider">Öğren</span>
             </button>
             <button onclick="switchTab('quiz')" id="tab-quiz" class="nav-item flex-1 h-full flex flex-col items-center justify-center text-slate-400">
-                <i class="fa-solid fa-pen-to-square text-xl mb-1"></i>
-                <span class="text-[10px] font-bold uppercase tracking-wider">Test</span>
+                <i class="fa-solid fa-pen-to-square text-2xl mb-1"></i>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider">Test</span>
             </button>
             <button onclick="switchTab('match')" id="tab-match" class="nav-item flex-1 h-full flex flex-col items-center justify-center text-slate-400">
-                <i class="fa-solid fa-gamepad text-xl mb-1"></i>
-                <span class="text-[10px] font-bold uppercase tracking-wider">Oyun</span>
+                <i class="fa-solid fa-gamepad text-2xl mb-1"></i>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider">Oyun</span>
             </button>
             <button onclick="switchTab('review')" id="tab-review" class="nav-item flex-1 h-full flex flex-col items-center justify-center text-slate-400">
-                <i class="fa-solid fa-brain text-xl mb-1"></i>
-                <span class="text-[10px] font-bold uppercase tracking-wider">Tekrar</span>
+                <i class="fa-solid fa-brain text-2xl mb-1"></i>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider">Tekrar</span>
             </button>
         </nav>
         
-        <!-- Safe Area Padding helper for notch devices -->
         <div class="bg-white w-full h-safe-bottom" style="padding-bottom: env(safe-area-inset-bottom);"></div>
     </div>
 
-    <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2 w-[90%] max-w-sm pointer-events-none"></div>
 
     <script>
         /**
-         * VERİ SETİ (A1, A2, B1 Örnekleri)
-         * Kendi 3000 kelimeni aynı formata (id, level, en, tr, example) 
-         * uygun şekilde kopyalayıp bu diziye yapıştırabilirsin.
+         * VERİ SETİ (Örnekler)
+         * 3.000 kelimeyi aynı formatta buraya ekleyebilirsin.
          */
         const kelimeler = [
-            // A1 SEVİYESİ
+            // A1
             { id: 1, level: 'A1', en: 'about', tr: 'hakkında', example: 'What are you talking about?' },
             { id: 2, level: 'A1', en: 'above', tr: 'yukarısında, üzerinde', example: 'The picture is above the sofa.' },
             { id: 3, level: 'A1', en: 'across', tr: 'karşısına, bir uçtan diğer uca', example: 'She walked across the street.' },
@@ -323,13 +379,8 @@
             { id: 13, level: 'A1', en: 'afternoon', tr: 'öğleden sonra', example: 'Good afternoon!' },
             { id: 14, level: 'A1', en: 'again', tr: 'tekrar', example: 'Please say it again.' },
             { id: 15, level: 'A1', en: 'age', tr: 'yaş', example: 'What is your age?' },
-            { id: 16, level: 'A1', en: 'ago', tr: 'önce', example: 'He left ten minutes ago.' },
-            { id: 17, level: 'A1', en: 'agree', tr: 'katılmak (fikre)', example: 'I agree with you completely.' },
-            { id: 18, level: 'A1', en: 'air', tr: 'hava', example: 'The fresh air feels good.' },
-            { id: 19, level: 'A1', en: 'airport', tr: 'havalimanı', example: 'We arrived at the airport early.' },
-            { id: 20, level: 'A1', en: 'always', tr: 'her zaman', example: 'I always wake up early.' },
-
-            // A2 SEVİYESİ
+            
+            // A2
             { id: 21, level: 'A2', en: 'ability', tr: 'yetenek, kabiliyet', example: 'She has a great ability to learn languages.' },
             { id: 22, level: 'A2', en: 'able', tr: 'yapabilen, muktedir', example: 'Will you be able to come?' },
             { id: 23, level: 'A2', en: 'accept', tr: 'kabul etmek', example: 'I accept your apology.' },
@@ -340,18 +391,8 @@
             { id: 28, level: 'A2', en: 'achieve', tr: 'başarmak, elde etmek', example: 'You can achieve your goals if you work hard.' },
             { id: 29, level: 'A2', en: 'actual', tr: 'gerçek, asıl', example: 'The actual cost was higher than expected.' },
             { id: 30, level: 'A2', en: 'advantage', tr: 'avantaj', example: 'Speed is a big advantage in this game.' },
-            { id: 31, level: 'A2', en: 'adventure', tr: 'macera', example: 'They went on a jungle adventure.' },
-            { id: 32, level: 'A2', en: 'advertise', tr: 'reklam yapmak', example: 'They advertise their products online.' },
-            { id: 33, level: 'A2', en: 'advice', tr: 'tavsiye (isim)', example: 'I need some legal advice.' },
-            { id: 34, level: 'A2', en: 'afford', tr: 'gücü yetmek (maddi)', example: 'I cannot afford a new car right now.' },
-            { id: 35, level: 'A2', en: 'afterwards', tr: 'daha sonra', example: 'We had dinner and went to the cinema afterwards.' },
-            { id: 36, level: 'A2', en: 'against', tr: 'karşı', example: 'Are you for or against the proposal?' },
-            { id: 37, level: 'A2', en: 'airline', tr: 'havayolu', example: 'Which airline are you flying with?' },
-            { id: 38, level: 'A2', en: 'alive', tr: 'hayatta, canlı', example: 'Is the spider still alive?' },
-            { id: 39, level: 'A2', en: 'allow', tr: 'izin vermek', example: 'Smoking is not allowed here.' },
-            { id: 40, level: 'A2', en: 'almost', tr: 'neredeyse', example: 'Dinner is almost ready.' },
-
-            // B1 SEVİYESİ
+            
+            // B1
             { id: 41, level: 'B1', en: 'absolutely', tr: 'kesinlikle, tamamen', example: 'You are absolutely right.' },
             { id: 42, level: 'B1', en: 'academic', tr: 'akademik', example: 'She has a brilliant academic record.' },
             { id: 43, level: 'B1', en: 'access', tr: 'erişim, giriş', example: 'The building has wheelchair access.' },
@@ -361,17 +402,7 @@
             { id: 47, level: 'B1', en: 'achieve', tr: 'ulaşmak, başarmak', example: 'She finally achieved her ambition to run a marathon.' },
             { id: 48, level: 'B1', en: 'achievement', tr: 'başarı', example: 'Climbing Mount Everest is a remarkable achievement.' },
             { id: 49, level: 'B1', en: 'acknowledge', tr: 'kabul etmek, onaylamak', example: 'He refused to acknowledge his mistake.' },
-            { id: 50, level: 'B1', en: 'acquire', tr: 'edinmek, kazanmak', example: 'The company has acquired a new software system.' },
-            { id: 51, level: 'B1', en: 'actual', tr: 'gerçek', example: 'The actual numbers were much lower.' },
-            { id: 52, level: 'B1', en: 'adapt', tr: 'uyum sağlamak', example: 'It took him a while to adapt to his new job.' },
-            { id: 53, level: 'B1', en: 'additional', tr: 'ek, ilave', example: 'We require some additional information.' },
-            { id: 54, level: 'B1', en: 'address', tr: 'ele almak (bir konuyu)', example: 'We must address the issue of climate change.' },
-            { id: 55, level: 'B1', en: 'administration', tr: 'yönetim, idare', example: 'She works in hospital administration.' },
-            { id: 56, level: 'B1', en: 'adopt', tr: 'evlat edinmek, benimsemek', example: 'They decided to adopt a child.' },
-            { id: 57, level: 'B1', en: 'advance', tr: 'ilerlemek, gelişmek', example: 'Technology has advanced rapidly.' },
-            { id: 58, level: 'B1', en: 'affair', tr: 'mesele, ilişki', example: 'The minister resigned over the affair.' },
-            { id: 59, level: 'B1', en: 'afterwards', tr: 'sonrasında', example: 'Let\'s go out now and eat afterwards.' },
-            { id: 60, level: 'B1', en: 'agency', tr: 'ajans, acente', example: 'She works for an advertising agency.' }
+            { id: 50, level: 'B1', en: 'acquire', tr: 'edinmek, kazanmak', example: 'The company has acquired a new software system.' }
         ];
 
         // --- DEVLET (STATE) YÖNETİMİ ---
@@ -381,21 +412,28 @@
             filteredWords: [],
             flashcardIndex: 0,
             score: 0,
-            learnedWords: [] // Öğrenilen kelime ID'leri
+            learnedWords: [], 
+            
+            // YENİ: Tekrarları önlemek için takip dizileri (sadece ID'ler tutulur)
+            seenInQuiz: [], 
+            seenInMatch: [],
+            
+            // YENİ: Review sekmesi için durum
+            reviewQueue: [],
+            currentReviewId: null
         };
 
         // --- OYUN DEĞİŞKENLERİ ---
         let matchSelectedEn = null;
         let matchSelectedTr = null;
-        let matchPairs = [];
         let matchCompleted = 0;
 
-        // --- BAŞLANGIÇ (INIT) ---
+        // --- BAŞLANGIÇ ---
         function init() {
-            const savedScore = localStorage.getItem('learnerXP');
+            const savedScore = localStorage.getItem('learnerXP_v2');
             if (savedScore) state.score = parseInt(savedScore);
             
-            const savedLearned = localStorage.getItem('learnerLearned');
+            const savedLearned = localStorage.getItem('learnerLearned_v2');
             if (savedLearned) state.learnedWords = JSON.parse(savedLearned);
 
             updateScoreDisplay();
@@ -406,10 +444,10 @@
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
             
-            let bgClass = type === 'success' ? 'bg-emerald-500' : (type === 'error' ? 'bg-rose-500' : 'bg-primary-500');
-            let icon = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info');
+            let bgClass = type === 'success' ? 'bg-emerald-500' : (type === 'error' ? 'bg-rose-500' : 'bg-primary-600');
+            let icon = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-exclamation' : 'fa-bell');
             
-            toast.className = `${bgClass} text-white px-5 py-3 rounded-2xl shadow-xl text-sm font-bold flex items-center gap-3 toast-enter w-full backdrop-blur-md bg-opacity-95`;
+            toast.className = `${bgClass} text-white px-5 py-3.5 rounded-2xl shadow-xl text-sm font-bold flex items-center gap-3 toast-enter w-full backdrop-blur-md bg-opacity-95 border border-white/20`;
             toast.innerHTML = `<i class="fa-solid ${icon} text-xl"></i> <span>${message}</span>`;
             
             const container = document.getElementById('toast-container');
@@ -425,14 +463,11 @@
 
         function playAudio(e, text) {
             if(e) e.stopPropagation(); 
-            
             if ('speechSynthesis' in window) {
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'en-US';
                 utterance.rate = 0.85; 
                 speechSynthesis.speak(utterance);
-            } else {
-                showToast("Tarayıcınız sesli okumayı desteklemiyor.", "error");
             }
         }
 
@@ -450,17 +485,17 @@
 
         function addXP(amount) {
             state.score += amount;
-            localStorage.setItem('learnerXP', state.score);
+            localStorage.setItem('learnerXP_v2', state.score);
             updateScoreDisplay();
             
             const scoreEl = document.getElementById('score-display');
             const parent = scoreEl.parentElement;
-            parent.classList.add('scale-110', 'bg-orange-500', 'text-white');
-            parent.classList.remove('bg-orange-100', 'text-orange-600');
+            parent.classList.add('scale-110', 'bg-orange-500', 'text-white', 'border-orange-500');
+            parent.classList.remove('bg-orange-50', 'text-orange-600', 'border-orange-100');
             
             setTimeout(() => {
-                parent.classList.remove('scale-110', 'bg-orange-500', 'text-white');
-                parent.classList.add('bg-orange-100', 'text-orange-600');
+                parent.classList.remove('scale-110', 'bg-orange-500', 'text-white', 'border-orange-500');
+                parent.classList.add('bg-orange-50', 'text-orange-600', 'border-orange-100');
             }, 300);
         }
 
@@ -477,7 +512,6 @@
                 const countEl = document.getElementById(`count-${lvl.toLowerCase()}`);
                 countEl.innerText = `${learned} / ${total} Kelime Öğrenildi`;
                 
-                // Tamamlandıysa rengi yeşil yap
                 if(learned === total && total > 0) {
                     countEl.classList.replace('text-emerald-500', 'text-emerald-600');
                     countEl.classList.replace('text-blue-500', 'text-blue-600');
@@ -489,8 +523,8 @@
 
         function resetProgress() {
             if(confirm("Tüm XP'lerin ve öğrendiğin kelimeler silinecek. Emin misin?")) {
-                localStorage.removeItem('learnerXP');
-                localStorage.removeItem('learnerLearned');
+                localStorage.removeItem('learnerXP_v2');
+                localStorage.removeItem('learnerLearned_v2');
                 state.score = 0;
                 state.learnedWords = [];
                 updateScoreDisplay();
@@ -507,19 +541,18 @@
         }
 
         function switchTab(tabId) {
-            // Level seçilmediyse ve Learn, Quiz, Match sekmelerine basıldıysa uyar
+            // Level seçilmediyse ve (Learn, Quiz, Match) sekmelerine basıldıysa uyar. 
+            // Review (Tekrar) sekmesine her zaman girilebilir.
             if(['learn', 'quiz', 'match'].includes(tabId) && !state.selectedLevel) {
                 showToast("Lütfen önce bir seviye seç!", "error");
                 switchTab('home');
                 return;
             }
 
-            // UI Tab Güncelleme
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             const activeTab = document.getElementById(`tab-${tabId}`);
             if(activeTab) activeTab.classList.add('active');
 
-            // View Güncelleme
             const views = ['home', 'learn', 'quiz', 'match', 'review'];
             views.forEach(v => {
                 document.getElementById(`view-${v}`).classList.add('hidden');
@@ -528,32 +561,34 @@
 
             state.currentTab = tabId;
 
-            // Görünüme özel başlatıcılar
             if (tabId === 'learn') renderFlashcard();
             if (tabId === 'quiz') initQuiz();
             if (tabId === 'match') initMatchGame();
-            if (tabId === 'review') renderReview();
+            if (tabId === 'review') initReviewTab();
         }
 
         function selectLevel(level) {
             state.selectedLevel = level;
-            // O seviyedeki kelimeleri filtrele
             state.filteredWords = kelimeler.filter(k => k.level === level);
             
-            // Öğrenilmemiş kelimeleri öne al, öğrenilenleri sona at
+            // Oyunlar için geçmişi sıfırla (yeni seviyeye özel taze başlangıç)
+            state.seenInQuiz = [];
+            state.seenInMatch = [];
+            
+            // Öğrenilmemiş kelimeleri öne al
             state.filteredWords.sort((a, b) => {
                 const aLearned = state.learnedWords.includes(a.id);
                 const bLearned = state.learnedWords.includes(b.id);
                 if (aLearned === bLearned) return 0;
-                return aLearned ? 1 : -1; // false (0) önce, true (1) sonra gelsin
+                return aLearned ? 1 : -1; 
             });
             
             state.flashcardIndex = 0;
-            showToast(`Mükemmel! ${level} seviyesini seçtin.`, 'success');
+            showToast(`${level} seviyesine hoş geldin!`, 'success');
             switchTab('learn');
         }
 
-        // --- FLASHCARD (ÖĞREN) MANTIĞI ---
+        // --- FLASHCARD (ÖĞREN) ---
         function renderFlashcard() {
             if (state.filteredWords.length === 0) return;
             
@@ -563,29 +598,26 @@
             const wordObj = state.filteredWords[state.flashcardIndex];
             const isLearned = state.learnedWords.includes(wordObj.id);
             
-            // İçeriği güncelle
             document.getElementById('fc-word').innerText = wordObj.en;
             document.getElementById('fc-meaning').innerText = wordObj.tr;
             document.getElementById('fc-example').innerText = wordObj.example;
             
-            document.getElementById('learn-level-badge').innerHTML = `<i class="fa-solid fa-layer-group text-primary-500 mr-1"></i> Seviye ${wordObj.level}`;
+            document.getElementById('learn-level-badge').innerHTML = `<i class="fa-solid fa-layer-group text-primary-500"></i> Seviye ${wordObj.level}`;
             document.getElementById('learn-progress').innerText = `${state.flashcardIndex + 1} / ${state.filteredWords.length}`;
 
-            // Buton durumları
             document.getElementById('btn-prev-card').disabled = state.flashcardIndex === 0;
             document.getElementById('btn-next-card').disabled = state.flashcardIndex === state.filteredWords.length - 1;
             
-            // Zaten öğrenilmişse butonu değiştir
             const learnBtn = document.querySelector('button[onclick="markAsLearned()"]');
             if(isLearned) {
                 learnBtn.innerHTML = `<i class="fa-solid fa-check-double text-xl"></i> Öğrenildi`;
                 learnBtn.classList.replace('bg-emerald-500', 'bg-slate-300');
-                learnBtn.classList.replace('shadow-emerald-200', 'shadow-slate-200');
+                learnBtn.classList.replace('shadow-emerald-200/50', 'shadow-slate-200');
                 learnBtn.classList.remove('hover:bg-emerald-600');
             } else {
                 learnBtn.innerHTML = `<i class="fa-solid fa-check-circle text-xl"></i> Öğrendim`;
                 learnBtn.classList.replace('bg-slate-300', 'bg-emerald-500');
-                learnBtn.classList.replace('shadow-slate-200', 'shadow-emerald-200');
+                learnBtn.classList.replace('shadow-slate-200', 'shadow-emerald-200/50');
                 learnBtn.classList.add('hover:bg-emerald-600');
             }
         }
@@ -612,36 +644,44 @@
             const wordObj = state.filteredWords[state.flashcardIndex];
             if (!state.learnedWords.includes(wordObj.id)) {
                 state.learnedWords.push(wordObj.id);
-                localStorage.setItem('learnerLearned', JSON.stringify(state.learnedWords));
+                localStorage.setItem('learnerLearned_v2', JSON.stringify(state.learnedWords));
                 addXP(5);
-                showToast(`"${wordObj.en}" başarıyla öğrenildi! +5 XP`);
+                showToast(`"${wordObj.en}" listene eklendi! +5 XP`);
                 updateLevelCounts();
-                renderFlashcard(); // Buton durumunu güncellemek için
+                renderFlashcard(); 
             } else {
-                showToast("Bu kelime zaten öğrenilmişler listende.", "info");
+                showToast("Bu kelime zaten listende.", "info");
             }
             
-            setTimeout(() => {
-                nextCard();
-            }, 600);
+            setTimeout(() => { nextCard(); }, 600);
         }
 
-        // --- QUIZ (TEST) MANTIĞI ---
+        // --- AKILLI QUIZ (TEST) ---
         function initQuiz() {
             if (state.filteredWords.length < 4) {
                 document.getElementById('quiz-options').innerHTML = `
-                    <div class="text-center p-6 bg-white rounded-2xl shadow-sm border border-slate-100">
+                    <div class="text-center p-6 bg-white rounded-3xl shadow-sm border border-slate-100">
                         <i class="fa-solid fa-box-open text-4xl text-slate-300 mb-3"></i>
                         <p class="text-slate-500 font-bold">Test için yeterli kelime yok.</p>
-                        <p class="text-sm text-slate-400 mt-1">Lütfen kodun içine daha fazla kelime ekleyin.</p>
                     </div>`;
                 return;
             }
 
-            // Rastgele bir hedef kelime seç
-            const targetWord = state.filteredWords[Math.floor(Math.random() * state.filteredWords.length)];
+            // GÖRÜLMEMİŞ kelimeleri bul
+            let unseenWords = state.filteredWords.filter(w => !state.seenInQuiz.includes(w.id));
             
-            // 3 rastgele yanlış cevap seç
+            // Eğer hepsi görüldüyse listeyi sıfırla ve baştan başla
+            if (unseenWords.length === 0) {
+                state.seenInQuiz = [];
+                unseenWords = [...state.filteredWords];
+                showToast("Tüm kelimeleri çözdün, liste başa sarıldı!", "info");
+            }
+
+            // Hedef kelimeyi seç ve görüldü olarak işaretle
+            const targetWord = unseenWords[Math.floor(Math.random() * unseenWords.length)];
+            state.seenInQuiz.push(targetWord.id);
+            
+            // 3 rastgele yanlış cevap seç (Görülen/Görülmeyen fark etmez, havuzdan seç)
             let wrongOptions = kelimeler.filter(k => k.id !== targetWord.id);
             wrongOptions = shuffleArray(wrongOptions).slice(0, 3);
             
@@ -649,16 +689,15 @@
             let options = [targetWord, ...wrongOptions];
             options = shuffleArray(options);
 
-            // Arayüzü güncelle
+            // UI Güncelle
             document.getElementById('quiz-word').innerText = targetWord.en;
-            
             const optionsContainer = document.getElementById('quiz-options');
             optionsContainer.innerHTML = '';
             
             options.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = 'w-full bg-white border-2 border-slate-100 p-5 rounded-2xl text-left font-bold text-slate-700 hover:border-primary-400 hover:shadow-md transition quiz-btn bouncy-btn text-lg flex items-center justify-between';
-                btn.innerHTML = `<span>${opt.tr}</span> <i class="fa-regular fa-circle text-slate-200 text-xl"></i>`;
+                btn.className = 'w-full bg-white border-2 border-slate-100 p-5 rounded-2xl text-left font-bold text-slate-700 hover:border-primary-400 hover:shadow-md transition quiz-btn bouncy-btn text-lg flex items-center justify-between group';
+                btn.innerHTML = `<span>${opt.tr}</span> <i class="fa-regular fa-circle text-slate-200 text-2xl group-hover:text-primary-300 transition-colors"></i>`;
                 btn.onclick = () => checkQuizAnswer(btn, opt.id, targetWord.id);
                 optionsContainer.appendChild(btn);
             });
@@ -666,7 +705,7 @@
 
         function checkQuizAnswer(btnElement, selectedId, correctId) {
             const buttons = document.querySelectorAll('.quiz-btn');
-            buttons.forEach(b => b.onclick = null); // Tıklamaları kilitle
+            buttons.forEach(b => b.onclick = null); 
 
             const icon = btnElement.querySelector('i');
 
@@ -674,7 +713,7 @@
                 btnElement.classList.replace('border-slate-100', 'border-emerald-500');
                 btnElement.classList.replace('text-slate-700', 'text-emerald-700');
                 btnElement.classList.add('bg-emerald-50');
-                icon.className = "fa-solid fa-circle-check text-emerald-500 text-2xl";
+                icon.className = "fa-solid fa-circle-check text-emerald-500 text-3xl";
                 
                 addXP(10);
                 showToast("Harika! Doğru bildin +10 XP", "success");
@@ -682,37 +721,63 @@
                 btnElement.classList.replace('border-slate-100', 'border-rose-500');
                 btnElement.classList.replace('text-slate-700', 'text-rose-700');
                 btnElement.classList.add('bg-rose-50');
-                icon.className = "fa-solid fa-circle-xmark text-rose-500 text-2xl";
+                icon.className = "fa-solid fa-circle-xmark text-rose-500 text-3xl";
                 
-                // Doğru cevabı bul ve göster
                 buttons.forEach(b => {
                     const targetWordObj = state.filteredWords.find(w => w.id === correctId);
-                    if(b.innerText.trim() === targetWordObj.tr) {
+                    if(b.querySelector('span').innerText === targetWordObj.tr) {
                         b.classList.replace('border-slate-100', 'border-emerald-500');
                         b.classList.add('bg-emerald-50', 'text-emerald-700');
-                        b.querySelector('i').className = "fa-solid fa-circle-check text-emerald-500 text-2xl";
+                        b.querySelector('i').className = "fa-solid fa-circle-check text-emerald-500 text-3xl";
                     }
                 });
                 showToast("Maalesef yanlış cevap.", "error");
             }
 
-            // 1.5 saniye sonra yeni soru
             setTimeout(() => {
                 if(state.currentTab === 'quiz') initQuiz();
-            }, 1500);
+            }, 1800);
         }
 
-        // --- EŞLEŞTİRME (MATCH) MANTIĞI ---
-        function initMatchGame() {
+        // --- AKILLI EŞLEŞTİRME (MATCH) ---
+        function initMatchGame(isUserTriggered = false) {
             if (state.filteredWords.length < 5) {
                 document.getElementById('match-col-en').innerHTML = `<p class="text-center text-slate-500 font-bold mt-10">Yetersiz kelime.</p>`;
                 document.getElementById('match-col-tr').innerHTML = '';
                 return;
             }
 
-            // 5 Rastgele kelime
-            let shuffledWords = shuffleArray([...state.filteredWords]).slice(0, 5);
-            matchPairs = shuffledWords.map(w => ({ id: w.id, en: w.en, tr: w.tr }));
+            if(isUserTriggered) {
+                // Kullanıcı "Yenile" dediyse görülenleri sıfırla ki yeni kartlar gelsin
+                // Tabii istenirse sıfırlanmayabilir, ama akıcılık için iyi olur.
+            }
+
+            // GÖRÜLMEMİŞ kelimeleri bul
+            let unseenWords = state.filteredWords.filter(w => !state.seenInMatch.includes(w.id));
+            let selectedWords = [];
+
+            if (unseenWords.length >= 5) {
+                // Yeterli görülmemiş kelime var
+                selectedWords = shuffleArray([...unseenWords]).slice(0, 5);
+            } else {
+                // Yeterli görülmemiş yok. Olanları al, üstünü öncekilerden (seen) tamamla
+                selectedWords = [...unseenWords];
+                let needed = 5 - selectedWords.length;
+                let seenWords = state.filteredWords.filter(w => state.seenInMatch.includes(w.id));
+                let extra = shuffleArray([...seenWords]).slice(0, needed);
+                selectedWords = selectedWords.concat(extra);
+                
+                // Havuz bittiği için seen listesini temizle (sonraki turlar için)
+                state.seenInMatch = []; 
+                if(!isUserTriggered) showToast("Bölümdeki tüm kelimeleri gördün!", "info");
+            }
+
+            // Seçilenleri görüldü işaretle
+            selectedWords.forEach(w => {
+                if(!state.seenInMatch.includes(w.id)) state.seenInMatch.push(w.id);
+            });
+
+            matchPairs = selectedWords.map(w => ({ id: w.id, en: w.en, tr: w.tr }));
             matchCompleted = 0;
             matchSelectedEn = null;
             matchSelectedTr = null;
@@ -728,7 +793,7 @@
 
             enCol.forEach(item => {
                 const btn = document.createElement('button');
-                btn.className = 'match-btn-en w-full bg-white border-2 border-slate-100 flex-1 rounded-xl flex items-center justify-center font-bold text-slate-700 shadow-sm transition hover:border-primary-300 bouncy-btn';
+                btn.className = 'match-btn-en w-full bg-white border-2 border-slate-100 flex-1 rounded-2xl flex items-center justify-center font-extrabold text-slate-700 shadow-sm transition hover:border-primary-300 hover:bg-primary-50 bouncy-btn px-2 text-center break-words';
                 btn.innerText = item.en;
                 btn.dataset.id = item.id;
                 btn.onclick = () => selectMatch('en', btn, item.id);
@@ -737,7 +802,7 @@
 
             trCol.forEach(item => {
                 const btn = document.createElement('button');
-                btn.className = 'match-btn-tr w-full bg-white border-2 border-slate-100 flex-1 rounded-xl flex items-center justify-center font-bold text-slate-600 shadow-sm transition hover:border-primary-300 bouncy-btn text-sm px-2';
+                btn.className = 'match-btn-tr w-full bg-white border-2 border-slate-100 flex-1 rounded-2xl flex items-center justify-center font-bold text-slate-600 shadow-sm transition hover:border-primary-300 hover:bg-primary-50 bouncy-btn text-sm px-3 text-center break-words';
                 btn.innerText = item.tr;
                 btn.dataset.id = item.id;
                 btn.onclick = () => selectMatch('tr', btn, item.id);
@@ -752,22 +817,22 @@
                 document.querySelectorAll('.match-btn-en').forEach(b => {
                     if(!b.classList.contains('opacity-30')) {
                         b.classList.replace('border-primary-500', 'border-slate-100');
-                        b.classList.remove('bg-primary-50', 'text-primary-700');
+                        b.classList.remove('bg-primary-100', 'text-primary-700', 'scale-95');
                     }
                 });
                 btnElement.classList.replace('border-slate-100', 'border-primary-500');
-                btnElement.classList.add('bg-primary-50', 'text-primary-700');
+                btnElement.classList.add('bg-primary-100', 'text-primary-700', 'scale-95');
                 matchSelectedEn = { el: btnElement, id: id };
                 playAudio(null, btnElement.innerText); 
             } else {
                 document.querySelectorAll('.match-btn-tr').forEach(b => {
                     if(!b.classList.contains('opacity-30')) {
                         b.classList.replace('border-primary-500', 'border-slate-100');
-                        b.classList.remove('bg-primary-50', 'text-primary-700');
+                        b.classList.remove('bg-primary-100', 'text-primary-700', 'scale-95');
                     }
                 });
                 btnElement.classList.replace('border-slate-100', 'border-primary-500');
-                btnElement.classList.add('bg-primary-50', 'text-primary-700');
+                btnElement.classList.add('bg-primary-100', 'text-primary-700', 'scale-95');
                 matchSelectedTr = { el: btnElement, id: id };
             }
 
@@ -776,9 +841,9 @@
                     // Doğru Eşleşme
                     [matchSelectedEn.el, matchSelectedTr.el].forEach(el => {
                         el.classList.replace('border-primary-500', 'border-emerald-500');
-                        el.classList.replace('bg-primary-50', 'bg-emerald-50');
+                        el.classList.replace('bg-primary-100', 'bg-emerald-50');
                         el.classList.replace('text-primary-700', 'text-emerald-700');
-                        el.classList.add('opacity-30', 'scale-95');
+                        el.classList.add('opacity-30');
                         el.onclick = null;
                     });
 
@@ -788,7 +853,7 @@
 
                     if (matchCompleted === 5) {
                         setTimeout(() => {
-                            showToast("Tebrikler! Bölümü geçtin. +25 XP", "success");
+                            showToast("Bölümü geçtin. +25 XP Bonus", "success");
                             addXP(25);
                             initMatchGame();
                         }, 1000);
@@ -799,16 +864,16 @@
                     const trEl = matchSelectedTr.el;
                     
                     [enEl, trEl].forEach(el => {
-                        el.classList.replace('border-primary-500', 'border-rose-500');
-                        el.classList.replace('bg-primary-50', 'bg-rose-50');
-                        el.classList.replace('text-primary-700', 'text-rose-700');
+                        el.classList.replace('border-primary-500', 'border-rose-400');
+                        el.classList.replace('bg-primary-100', 'bg-rose-50');
+                        el.classList.replace('text-primary-700', 'text-rose-600');
                         el.classList.add('animate-pulse');
                     });
                     
                     setTimeout(() => {
                         [enEl, trEl].forEach(el => {
-                            el.classList.replace('border-rose-500', 'border-slate-100');
-                            el.classList.remove('bg-rose-50', 'text-rose-700', 'animate-pulse');
+                            el.classList.replace('border-rose-400', 'border-slate-100');
+                            el.classList.remove('bg-rose-50', 'text-rose-600', 'animate-pulse', 'scale-95');
                         });
                     }, 600);
                 }
@@ -818,122 +883,84 @@
             }
         }
 
-        // --- REVIEW (TEKRAR ET) MANTIĞI ---
-        function renderReview() {
-            const container = document.getElementById('review-list');
-            container.innerHTML = '';
-            
-            document.getElementById('review-count').innerText = `Toplam: ${state.learnedWords.length} Kelime`;
+        // --- YENİ: REVIEW (HAFIZA TESTİ) MANTIĞI ---
+        function initReviewTab() {
+            if(state.learnedWords.length === 0) {
+                document.getElementById('review-empty').classList.remove('hidden');
+                document.getElementById('review-active').classList.add('hidden');
+                document.getElementById('review-done').classList.add('hidden');
+            } else {
+                startReview();
+            }
+        }
 
-            if (state.learnedWords.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center p-8 mt-10">
-                        <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fa-solid fa-ghost text-4xl text-slate-300"></i>
-                        </div>
-                        <h3 class="font-bold text-slate-700 text-lg mb-2">Burası biraz ıssız...</h3>
-                        <p class="text-sm text-slate-500">Henüz hiç kelime öğrenmedin. 'Öğren' sekmesine gidip çalışmaya başla!</p>
-                    </div>`;
+        function startReview() {
+            document.getElementById('review-empty').classList.add('hidden');
+            document.getElementById('review-done').classList.add('hidden');
+            document.getElementById('review-active').classList.remove('hidden');
+            
+            // Öğrenilen kelimeleri karıştırıp kuyruğa al
+            state.reviewQueue = shuffleArray([...state.learnedWords]);
+            loadNextReviewQuestion();
+        }
+
+        function loadNextReviewQuestion() {
+            if (state.reviewQueue.length === 0) {
+                // Test bitti
+                document.getElementById('review-active').classList.add('hidden');
+                document.getElementById('review-done').classList.remove('hidden');
                 return;
             }
 
-            // Öğrenilen kelimeleri bul ve ID'ye göre sırala (veya eklendiği sıraya göre, ki state.learnedWords eklendiği sıradadır)
-            const learnedObjs = state.learnedWords.map(id => kelimeler.find(k => k.id === id)).filter(Boolean).reverse(); // En son öğrenilen en üstte
+            state.currentReviewId = state.reviewQueue.pop();
+            const wordObj = kelimeler.find(k => k.id === state.currentReviewId);
+            
+            if(!wordObj) {
+                // Hata durumu, pas geç
+                loadNextReviewQuestion();
+                return;
+            }
 
-            learnedObjs.forEach(word => {
-                const card = document.createElement('div');
-                card.className = 'review-card bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all';
-                
-                card.innerHTML = `
-                    <div class="flex justify-between items-center cursor-pointer select-none" onclick="toggleReviewCard(this)">
-                        <div class="flex items-center gap-4">
-                            <button onclick="playAudio(event, '${word.en.replace(/'/g, "\\'")}')" class="w-10 h-10 bg-primary-50 text-primary-600 rounded-full flex items-center justify-center hover:bg-primary-100 transition bouncy-btn">
-                                <i class="fa-solid fa-volume-high"></i>
-                            </button>
-                            <div>
-                                <h3 class="font-bold text-slate-800 text-lg leading-none">${word.en}</h3>
-                                <span class="text-[10px] font-bold text-primary-500 uppercase tracking-widest">${word.level}</span>
-                            </div>
-                        </div>
-                        <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 chevron transition-transform">
-                            <i class="fa-solid fa-chevron-down"></i>
-                        </div>
-                    </div>
-                    
-                    <div class="review-card-inner border-t border-slate-100 mt-0">
-                        <p class="font-bold text-primary-600 text-lg mb-2">${word.tr}</p>
-                        <p class="text-sm text-slate-500 italic mb-4">"${word.example}"</p>
-                        
-                        <button onclick="unlearnWord(${word.id})" class="w-full bg-rose-50 text-rose-600 py-2 rounded-xl text-sm font-bold hover:bg-rose-100 transition bouncy-btn flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-rotate-left"></i> Unuttum, tekrar listeme al
-                        </button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
+            // Arayüzü Sıfırla ve Hazırla
+            document.getElementById('review-progress-text').innerText = `Kalan: ${state.reviewQueue.length + 1} Kelime`;
+            
+            document.getElementById('review-word-en').innerText = wordObj.en;
+            document.getElementById('review-word-tr').innerText = wordObj.tr;
+            document.getElementById('review-word-ex').innerText = `"${wordObj.example}"`;
+            
+            // Cevap alanını gizle, soru alanını göster
+            document.getElementById('review-answer-area').classList.add('hidden');
+            document.getElementById('review-question-area').style.opacity = '1';
+            document.getElementById('review-question-area').style.pointerEvents = 'auto';
         }
 
-        function toggleReviewCard(headerElement) {
-            const card = headerElement.closest('.review-card');
-            const chevron = card.querySelector('.chevron');
-            
-            // Diğer açık olanları kapat (Opsiyonel, daha temiz durur)
-            document.querySelectorAll('.review-card').forEach(c => {
-                if(c !== card && c.classList.contains('expanded')) {
-                    c.classList.remove('expanded');
-                    c.querySelector('.chevron').style.transform = 'rotate(0deg)';
-                }
-            });
+        function showReviewAnswer() {
+            // Soru alanını saydamlaştır/gizle, Cevap alanını göster
+            document.getElementById('review-question-area').style.opacity = '0';
+            document.getElementById('review-question-area').style.pointerEvents = 'none';
+            document.getElementById('review-answer-area').classList.remove('hidden');
+        }
 
-            card.classList.toggle('expanded');
-            
-            if (card.classList.contains('expanded')) {
-                chevron.style.transform = 'rotate(180deg)';
-                chevron.classList.replace('bg-slate-50', 'bg-primary-100');
-                chevron.classList.replace('text-slate-400', 'text-primary-600');
+        function handleReviewResult(remembered) {
+            if (!remembered) {
+                // Unuttuysa öğrenilenlerden çıkar
+                state.learnedWords = state.learnedWords.filter(id => id !== state.currentReviewId);
+                localStorage.setItem('learnerLearned_v2', JSON.stringify(state.learnedWords));
+                updateLevelCounts();
+                showToast("Sorun değil, kelime tekrar öğrenme listene alındı.", "info");
             } else {
-                chevron.style.transform = 'rotate(0deg)';
-                chevron.classList.replace('bg-primary-100', 'bg-slate-50');
-                chevron.classList.replace('text-primary-600', 'text-slate-400');
+                // Bildiyse XP ver
+                addXP(2);
+                showToast("Harika hafıza! +2 XP", "success");
             }
+            
+            // Hafif gecikmeyle diğer soruya geç (animasyon hissi)
+            setTimeout(() => {
+                loadNextReviewQuestion();
+            }, 300);
         }
 
-        function unlearnWord(id) {
-            state.learnedWords = state.learnedWords.filter(wId => wId !== id);
-            localStorage.setItem('learnerLearned', JSON.stringify(state.learnedWords));
-            updateLevelCounts();
-            renderReview();
-            showToast("Kelime öğrenme listene geri alındı.", "info");
-        }
-        
-        function playReviewWords() {
-            if(state.learnedWords.length === 0) return;
-            showToast("Kelime okumaları başlıyor...", "info");
-            
-            let index = 0;
-            // Tüm öğrenilen kelimelerin ingilizcelerini listele (öğrenilen sıraya göre tersten)
-            const wordsToRead = state.learnedWords.map(id => kelimeler.find(k => k.id === id)?.en).filter(Boolean).reverse();
-            
-            function readNext() {
-                if (index < wordsToRead.length) {
-                    const utterance = new SpeechSynthesisUtterance(wordsToRead[index]);
-                    utterance.lang = 'en-US';
-                    utterance.rate = 0.8;
-                    utterance.onend = () => {
-                        setTimeout(() => {
-                            index++;
-                            readNext();
-                        }, 800); // Kelimeler arası 0.8sn bekleme
-                    };
-                    speechSynthesis.speak(utterance);
-                }
-            }
-            // Okuma sırasında varsa eski okumaları durdur
-            speechSynthesis.cancel();
-            readNext();
-        }
-
-        // Uygulamayı Başlat
+        // Başlat
         window.onload = init;
 
     </script>
